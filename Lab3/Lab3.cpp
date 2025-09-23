@@ -184,4 +184,3 @@ int main()
 
     Remove5(Head, size); // видаляємо елементи < 5
 }
-}
