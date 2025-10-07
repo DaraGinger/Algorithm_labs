@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 
 #pragma region Lab1
 
@@ -575,18 +576,115 @@ void Task3_2()
     PrintBidirectionalList(*Head); // повторний вивід
 }
 
-int main()
+
+#pragma endregion
+
+#pragma endregion
+
+#pragma region Lab4
+
+#pragma region Task1
+/* Створити чергу, інформаційними полями якої є : довжина катетів
+прямокутного трикутника(два дійсних числа). Додати у чергу відомості
+про новий трикутник. Організувати перегляд даних черги. Визначити
+периметр трикутника напочатку черги
+#pragma endregion */
+
+struct TriangleCatets
 {
-    Task3_2(); // запуск програми
+    double FirstCatet;
+    double SecondCatet;
+};
+
+struct TriangleList
+{
+    TriangleCatets Triangle;
+
+    TriangleList* Next;
+};
+
+void PrintTriangleList(TriangleList* Head)
+{
+    if (Head != NULL)
+    {
+        std::cout << "First cathetus: " << Head->Triangle.FirstCatet << "\tSecond cathetus: " << Head->Triangle.SecondCatet <<"\n";
+        PrintTriangleList(Head->Next);
+    }
+    else
+    {
+        std::cout << "----------\n";
+    }
 }
 
+void AddTriangleList(TriangleList** Head)
+{
+    TriangleList* Current = (*Head);
+    TriangleList* NewItem = new TriangleList();
+
+    NewItem->Next = Current;
+    (*Head) = NewItem;
+    
+    std::cout << "Enter first cathetus:\n";
+    std::cin >> NewItem->Triangle.FirstCatet;
+
+    std::cout << "Enter second cathetus:\n";
+    std::cin >> NewItem->Triangle.SecondCatet;
+
+    PrintTriangleList((*Head));
+}
+
+void RemoveTriangleList(TriangleList** Head)
+{
+    TriangleList* Current = (*Head);
+
+    (*Head) = Current->Next;    
+
+    delete Current;
+
+    PrintTriangleList((*Head));
+}
+
+void Perimeter(TriangleList** Head)
+{
+    double cFSquare = pow((*Head)->Triangle.FirstCatet, 2);
+    double cSSquare = pow((*Head)->Triangle.SecondCatet, 2);
+    double hypotenuse = sqrt(cFSquare+cSSquare);
+    double perimeter = hypotenuse + (*Head)->Triangle.FirstCatet + (*Head)->Triangle.SecondCatet;
+
+    std::cout << "Perimetere: " << perimeter << "\n";
+}
+
+void Task4_1()
+{
+    TriangleList** Head = new TriangleList*();
+
+    bool end = false;
+
+    while (!end)
+    {
+        int menu = 0;
+        std::cout << "Menu:\n1-Add\n2-Remove\n3-Perimeter\n4-End\n";
+        std::cin >> menu;
+        std::cout << "----------\n";
+
+        if (menu == 1)
+            AddTriangleList(Head);
+        else if (menu == 2)
+            RemoveTriangleList(Head);
+        else if (menu == 3)
+            Perimeter(Head);
+        else if (menu == 4)
+            end = true;
+        else
+            std::cout << "There is no such action.";
+    }
+}
 
 #pragma endregion
 
 #pragma endregion
-
 
 int main()
 {
-    Task3_2();
+    Task4_1();
 }
