@@ -596,19 +596,19 @@ struct TriangleCatets
     double SecondCatet;
 };
 
-struct TriangleList
+struct Queue
 {
     TriangleCatets Triangle;
 
-    TriangleList* Next;
+    Queue* Next;
 };
 
-void PrintTriangleList(TriangleList* Head)
+void PrintQueue(Queue* Head)
 {
     if (Head != NULL)
     {
         std::cout << "First cathetus: " << Head->Triangle.FirstCatet << "\tSecond cathetus: " << Head->Triangle.SecondCatet <<"\n";
-        PrintTriangleList(Head->Next);
+        PrintQueue(Head->Next);
     }
     else
     {
@@ -616,35 +616,57 @@ void PrintTriangleList(TriangleList* Head)
     }
 }
 
-void AddTriangleList(TriangleList** Head)
+void AddQueue(Queue** Head)
 {
-    TriangleList* Current = (*Head);
-    TriangleList* NewItem = new TriangleList();
+    Queue* Current = (*Head);
+    Queue* NewItem = new Queue();
 
-    NewItem->Next = Current;
-    (*Head) = NewItem;
-    
-    std::cout << "Enter first cathetus:\n";
-    std::cin >> NewItem->Triangle.FirstCatet;
+    bool end = false;
 
-    std::cout << "Enter second cathetus:\n";
-    std::cin >> NewItem->Triangle.SecondCatet;
+    if (Current == NULL)
+    {
+        (*Head) = NewItem;
 
-    PrintTriangleList((*Head));
+        std::cout << "Enter first cathetus:\n";
+        std::cin >> NewItem->Triangle.FirstCatet;
+
+        std::cout << "Enter second cathetus:\n";
+        std::cin >> NewItem->Triangle.SecondCatet;
+
+        end = true;
+    }
+
+    while (!end)
+    {                
+        if (Current->Next == NULL)
+        {
+            Current->Next = NewItem;
+            std::cout << "Enter first cathetus:\n";
+            std::cin >> NewItem->Triangle.FirstCatet;
+
+            std::cout << "Enter second cathetus:\n";
+            std::cin >> NewItem->Triangle.SecondCatet;
+
+            end = true;
+        }
+        Current = Current->Next;
+    }
+
+    PrintQueue((*Head));
 }
 
-void RemoveTriangleList(TriangleList** Head)
+void RemoveQueue(Queue** Head)
 {
-    TriangleList* Current = (*Head);
+    Queue* Current = (*Head);
 
     (*Head) = Current->Next;    
 
     delete Current;
 
-    PrintTriangleList((*Head));
+    PrintQueue((*Head));
 }
 
-void Perimeter(TriangleList** Head)
+void Perimeter(Queue** Head)
 {
     double cFSquare = pow((*Head)->Triangle.FirstCatet, 2);
     double cSSquare = pow((*Head)->Triangle.SecondCatet, 2);
@@ -656,7 +678,7 @@ void Perimeter(TriangleList** Head)
 
 void Task4_1()
 {
-    TriangleList** Head = new TriangleList*();
+    Queue** Head = new Queue *();
 
     bool end = false;
 
@@ -668,9 +690,9 @@ void Task4_1()
         std::cout << "----------\n";
 
         if (menu == 1)
-            AddTriangleList(Head);
+            AddQueue(Head);
         else if (menu == 2)
-            RemoveTriangleList(Head);
+            RemoveQueue(Head);
         else if (menu == 3)
             Perimeter(Head);
         else if (menu == 4)
@@ -681,6 +703,96 @@ void Task4_1()
 }
 
 #pragma endregion
+
+#pragma region Task2
+
+/*Створити стек із рядків, для реалізації використовувати однозв'язні
+списки. Реалізувати операції додавання (push) і видалення (pop)
+елемента з стека. Додати у стек рядки "Students", "of", "the", "group",
+"TE" і роздрукувати вміст стека. Видалити один елемент зі стека, і
+роздрукувати вміст стека ще раз. Надрукувати всі рядки, що
+починаються з малої літери t*/
+
+struct Stack
+{
+    std::string Word;
+
+    Stack* Next;
+};
+
+void PrintStack(Stack* Head)
+{
+    if (Head != NULL)
+    {
+        std::cout << Head->Word << " ";
+        PrintStack(Head->Next);
+    }
+    else
+    {
+        std::cout << "\n----------\n";
+    }
+}
+
+void PushStack(Stack** Head, std::string word)
+{
+    Stack* Current = (*Head);
+    Stack* NewItem = new Stack();
+
+    NewItem->Next = Current;
+    (*Head) = NewItem;
+    NewItem->Word = word;
+}
+
+void PopStack(Stack** Head)
+{
+    Stack* Current = (*Head);
+
+    (*Head) = Current->Next;
+
+    delete Current;
+}
+
+void FilterStack(Stack** Head)
+{
+    Stack* Current = (*Head);
+    bool end = false;
+    while (!end)
+    {
+        if (Current->Word[0] == 't')
+        {
+            std::cout << Current->Word;
+        }
+        
+        if (Current->Next == NULL)
+        {
+            end = true;
+        }
+
+        Current = Current->Next;
+    }
+}
+
+void Task4_2()
+{
+    Stack** Head = new Stack * ();
+
+    PushStack(Head, "Students");
+    PushStack(Head, "of");
+    PushStack(Head, "the");
+    PushStack(Head, "group");
+    PushStack(Head, "TE");
+
+    PrintStack(*Head);
+
+    PopStack(Head);
+
+    PrintStack(*Head);
+
+    FilterStack(Head);
+}
+
+#pragma endregion
+
 
 #pragma endregion
 
