@@ -1,5 +1,8 @@
 #include <iostream>
 #include <cmath>
+#include <list>
+#include <stack>
+using namespace std;
 
 #pragma region Lab1
 
@@ -216,23 +219,23 @@ void Task2_1()
 Видалити зі списку усі значення, які менші 5 */
 
 // Структура вузла однозв’язного списку
-struct List
+struct MyList
 {
     int Value;
-    List* Next;
+    MyList* Next;
 };
 
-List* CreateList(int count, List* Head)
+MyList* CreateList(int count, MyList* Head)
 {
     std::cout << "Enter numbers:\n";
-    List* Current = Head; // вказівник на поточний вузол
+    MyList* Current = Head; // вказівник на поточний вузол
 
     // Заповнюємо список
     for (int i = 0; i < count; i++)
     {
         // Якщо це не останній елемент — створюємо новий вузол
         if (i != count - 1)
-            Current->Next = new List();
+            Current->Next = new MyList();
         else
             Current->Next = NULL; // останній вузол вказує на NULL
 
@@ -244,7 +247,7 @@ List* CreateList(int count, List* Head)
 }
 
 // Рекурсивний вивід списку
-void PrintList(List* Head)
+void PrintList(MyList* Head)
 {
     if (Head != NULL)
     {
@@ -257,12 +260,12 @@ void PrintList(List* Head)
     }
 }
 
-List* AddList(List* Head, int value, int index)
+MyList* AddList(MyList* Head, int value, int index)
 {
     std::cout << "Added item:\n";
 
-    List* Current = Head;       // поточний вузол
-    List* NewItem = new List(); // новий вузол
+    MyList* Current = Head;       // поточний вузол
+    MyList* NewItem = new MyList(); // новий вузол
     NewItem->Value = value;
 
     // Якщо вставка на початок (index == 0)
@@ -292,9 +295,9 @@ List* AddList(List* Head, int value, int index)
     return Head;
 }
 
-List* RemoveList(List* Head, int index)
+MyList* RemoveList(MyList* Head, int index)
 {
-    List* Current = Head;
+    MyList* Current = Head;
 
     // Якщо видаляємо перший елемент
     if (index == 0)
@@ -303,7 +306,7 @@ List* RemoveList(List* Head, int index)
         return Head;
     }
 
-    List* PriorItem = Head; // попередній елемент
+    MyList* PriorItem = Head; // попередній елемент
 
     // Шукаємо вузол, який потрібно видалити
     for (int i = 1; i <= index; i++)
@@ -332,9 +335,9 @@ List* RemoveList(List* Head, int index)
 }
 
 // Обчислення суми елементів >= 15
-void Sum(List* Head, int size)
+void Sum(MyList* Head, int size)
 {
-    List* Current = Head;
+    MyList* Current = Head;
     int sum = 0;
 
     for (int i = 0; i < size; i++)
@@ -352,11 +355,11 @@ void Sum(List* Head, int size)
 }
 
 // Видалення зі списку всіх елементів < 5
-void Remove5(List* Head, int size)
+void Remove5(MyList* Head, int size)
 {
     std::cout << "List without numbers less than 5:\n";
 
-    List* Current = Head;
+    MyList* Current = Head;
     int index = 0; // лічильник позицій
 
     for (int i = 0; i < size; i++)
@@ -384,7 +387,7 @@ void Task3_1()
     std::cout << "----------\n";
 
     // Створюємо голову списку
-    List* Head = new List();
+    MyList* Head = new MyList();
     Head = CreateList(size, Head); // наповнюємо список
     std::cout << "----------\n";
 
@@ -793,10 +796,135 @@ void Task4_2()
 
 #pragma endregion
 
+#pragma region Task3
+
+void PrintStlList(list<int> myList)
+{
+    cout << "List:\n";
+
+    for (int n : myList)
+    {
+        cout << n << "\n";
+    }
+}
+
+void Task4_3()
+{
+    /*Створити лінійний односпрямований список із цілих чисел. Визначити
+    суму елементів списку зі значенням більше або рівним 15. Видалити зі
+    списку усі значення, які менші 5.*/
+
+    list<int> myList;
+
+    int size = 0;
+    cout << "Enter size:\n";
+    cin >> size;
+    cout << "----------\n";
+
+    for (int i = 0; i < size; i++)
+    {
+        int value = rand()%20;
+        myList.push_back(value);
+    }
+
+    PrintStlList(myList);
+
+    int sum = 0;
+
+    list<int> valuesToRemove;
+
+    for (int n : myList)
+    {
+        if (n >= 15)
+        {
+            sum += n;
+        }
+
+        if (n < 5)
+        {
+            valuesToRemove.push_back(n);
+        }
+    }
+
+    cout << "Sum of numbers:" << sum << "\n";
+
+    for (int n : valuesToRemove)
+    {
+        myList.remove(n);
+    }    
+    
+    PrintStlList(myList);
+}
+
+#pragma endregion
+
+#pragma region Task4
+
+/*Створити стек із рядків, для реалізації використовувати однозв'язні
+списки. Реалізувати операції додавання (push) і видалення (pop)
+елемента з стека. Додати у стек рядки "Students", "of", "the", "group",
+"TE" і роздрукувати вміст стека. Видалити один елемент зі стека, і
+роздрукувати вміст стека ще раз. Надрукувати всі рядки, що
+починаються з малої літери t*/
+
+void printStack(stack<string> myStack)
+{
+    stack<string> copy = myStack;
+
+    cout << "Stack:\n";
+
+    for (int i = 0; i < myStack.size(); i++)
+    {
+        cout << copy.top() << "\n";
+        copy.pop();
+    }
+
+    std::cout << "----------\n";
+}
+
+void filterStack(stack<string> myStack)
+{
+    stack<string> copy = myStack;
+
+    cout << "Filter stack:\n";
+
+    for (int i = 0; i < myStack.size(); i++)
+    {
+        string word = copy.top();
+        if (word[0] == 't')
+            cout << copy.top() << "\n";
+        copy.pop();
+    }
+
+    std::cout << "----------\n";
+}
+
+void Task4_4()
+{
+    stack<string> myStack;
+
+    myStack.push("Students");
+    myStack.push("of");
+    myStack.push("the");
+    myStack.push("group");
+    myStack.push("TE");
+
+    printStack(myStack);
+
+    myStack.pop();
+
+    printStack(myStack);
+
+    filterStack(myStack);
+}
+
+#pragma endregion
+
+
 
 #pragma endregion
 
 int main()
 {
-    Task4_1();
+    Task4_3();
 }
