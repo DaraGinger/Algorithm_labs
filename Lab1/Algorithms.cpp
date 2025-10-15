@@ -920,11 +920,48 @@ void Task4_4()
 
 #pragma endregion
 
+#pragma region Task5
+
+/*¬вести два числа та обчислити найб≥льший сп≥льний д≥льник цих двох ц≥лих чисел,
+використовуючи рекурсивний алгоритм ≈вкл≥да.*/
+
+int  EuclideanAlgorithm(int firstNumber, int secondNumber)
+{
+    int remainder = firstNumber % secondNumber;
+
+    if (remainder == 0)
+    {
+        return secondNumber;
+    }
+    else
+    {
+        EuclideanAlgorithm(secondNumber, remainder);
+    }
+}
+
+void Task4_5()
+{
+    int firstNumber, secondNumber;
+    cout << "Enter first number:\n";
+    cin >> firstNumber;
+
+    cout << "Enter second number:\n";
+    cin >> secondNumber;
+
+    int max = firstNumber > secondNumber ? firstNumber : secondNumber;
+    int min = firstNumber > secondNumber ? secondNumber : firstNumber;
+
+    int result = EuclideanAlgorithm(max, min);
+
+    cout << "GCD: " << result;
+}
+
+#pragma endregion
 
 
 #pragma endregion
 
 int main()
 {
-    Task4_3();
+    Task4_5();
 }
