@@ -961,7 +961,148 @@ void Task4_5()
 
 #pragma endregion
 
+#pragma region Lab5
+
+#pragma region Task1
+
+/*З вихідної послідовності цілих чисел побудувати бінарне дерево пошуку.
+Вивести на екран значення усього листя дерева з непарними значеннями*/
+
+struct BinaryTree 
+{
+    int Data; //поле даних
+
+    BinaryTree* Left; //покажчік на лівий нащадок
+
+    BinaryTree* Right; // покажчік на правий нащадок
+};
+
+void Insert_BinaryTree(BinaryTree* root, int value)
+{
+    if (root->Data < value)
+    {
+        if (root->Right != NULL)
+        {
+            Insert_BinaryTree(root->Right, value);
+        }
+        else
+        {
+            root->Right = new BinaryTree();
+            root->Right->Data = value;
+        }
+    }
+    else if (root->Data > value)
+    {
+        if (root->Left != NULL)
+        {
+            Insert_BinaryTree(root->Left, value);
+        }
+        else
+        {
+            root->Left = new BinaryTree();
+            root->Left->Data = value;
+        }
+    }
+}
+
+BinaryTree* Create_BinaryTree(int size)
+{
+    BinaryTree* tree = new BinaryTree();
+
+    cout << "Enter first number: ";
+    cin >> tree->Data;
+    size--;
+
+    for (int i = 0; i < size; i++)
+    {
+        int number = 0;
+
+        cout << "Enter number: ";
+        cin >> number;
+
+        Insert_BinaryTree(tree, number);
+    }
+    
+    return tree;
+}
+
+void Print_BinaryTree(BinaryTree* Node, int l) 
+{
+    int i;
+
+    if (Node != NULL) {
+
+        Print_BinaryTree(Node->Right, l + 1);
+
+        for (i = 0; i < l; i++) cout << "   ";
+
+        printf("%4ld", Node->Data);
+
+        Print_BinaryTree(Node->Left, l + 1);
+
+    }
+
+    else cout << endl;
+}
+
+void PrintOddNumbers_BinaryTree(BinaryTree* Node, int l) 
+{
+    int i;
+
+    if (Node != NULL) {
+
+        PrintOddNumbers_BinaryTree(Node->Right, l + 1);
+
+        for (i = 0; i < l; i++) cout << "   ";
+
+        if (Node->Data % 2 != 0 )
+        {
+            printf("%4ld", Node->Data);
+        }
+
+        PrintOddNumbers_BinaryTree(Node->Left, l + 1);
+
+    }
+
+    else cout << endl;
+}
+
+void Task5_1()
+{
+    int size = 0;
+
+    cout << "Enter count of numbers you want enter: ";
+    cin >> size;
+
+    BinaryTree* tree = Create_BinaryTree(size);
+
+    Print_BinaryTree(tree, size);
+
+    cout << "----------------------------------------------";
+
+    PrintOddNumbers_BinaryTree(tree, size);
+}
+
+#pragma endregion
+
+#pragma region Task2
+
+/* Дані про працівників підприємства:
+    – прізвище,
+    – посада (код - ціле число),
+    – рік народження,
+    - зарплатня(ціле число)
+
+  Відібрати всі дані про працівників, зарплатня яких
+  більше серед нього значення зарплатні всіх працівників*/
+
+#pragma endregion
+
+
+#pragma endregion
+
+
 int main()
 {
-    Task4_5();
+    Task5_1();
 }
