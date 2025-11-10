@@ -2,6 +2,10 @@
 #include <cmath>
 #include <list>
 #include <stack>
+#include <map>
+#include <set>
+#include <algorithm>
+#include <iterator>
 using namespace std;
 
 #pragma region Lab1
@@ -977,93 +981,116 @@ struct BinaryTree
     BinaryTree* Right; // покажчік на правий нащадок
 };
 
+// Функція вставки нового елемента у бінарне дерево
 void Insert_BinaryTree(BinaryTree* root, int value)
 {
+    // Якщо значення більше, ніж у поточного вузла — ідемо вправо
     if (root->Data < value)
     {
         if (root->Right != NULL)
         {
+            // Якщо правий вузол існує — рекурсивно вставляємо у піддерево
             Insert_BinaryTree(root->Right, value);
         }
         else
         {
+            // Якщо правого вузла немає — створюємо новий
             root->Right = new BinaryTree();
             root->Right->Data = value;
+            root->Right->Left = nullptr;
+            root->Right->Right = nullptr;
         }
     }
+    // Якщо значення менше — ідемо вліво
     else if (root->Data > value)
     {
         if (root->Left != NULL)
         {
+            // Якщо лівий вузол існує — рекурсивно вставляємо у піддерево
             Insert_BinaryTree(root->Left, value);
         }
         else
         {
+            // Якщо лівого вузла немає — створюємо новий
             root->Left = new BinaryTree();
             root->Left->Data = value;
+            root->Left->Left = nullptr;
+            root->Left->Right = nullptr;
         }
     }
+    // Якщо значення дорівнює — нічого не робимо (щоб уникнути дублікатів)
 }
 
+// Створення всього дерева з кількох введених користувачем чисел
 BinaryTree* Create_BinaryTree(int size)
 {
+    // Створюємо корінь дерева
     BinaryTree* tree = new BinaryTree();
 
     cout << "Enter first number: ";
-    cin >> tree->Data;
-    size--;
+    cin >> tree->Data;  // Перше число стає коренем
+    tree->Left = nullptr;
+    tree->Right = nullptr;
+    size--; // Один елемент вже додано
 
+    // Додаємо решту елементів у дерево
     for (int i = 0; i < size; i++)
     {
         int number = 0;
-
         cout << "Enter number: ";
         cin >> number;
 
+        // Викликаємо функцію вставки для кожного нового числа
         Insert_BinaryTree(tree, number);
     }
-    
-    return tree;
+
+    return tree; // Повертаємо вказівник на корінь дерева
 }
 
-void Print_BinaryTree(BinaryTree* Node, int l) 
+// Вивід дерева у вигляді "дерева" 
+void Print_BinaryTree(BinaryTree* Node, int l)
 {
     int i;
 
-    if (Node != NULL) {
-
+    if (Node != NULL)
+    {
+        // Спочатку друкуємо праве піддерево
         Print_BinaryTree(Node->Right, l + 1);
 
+        // Відступ залежно від рівня (щоб бачити структуру)
         for (i = 0; i < l; i++) cout << "   ";
 
-        printf("%4ld", Node->Data);
+        // Виводимо значення вузла
+        printf("%4d", Node->Data);
 
+        // Потім виводимо ліве піддерево
         Print_BinaryTree(Node->Left, l + 1);
-
     }
-
     else cout << endl;
 }
 
-void PrintOddNumbers_BinaryTree(BinaryTree* Node, int l) 
+// Вивід лише непарних чисел дерева
+void PrintOddNumbers_BinaryTree(BinaryTree* Node, int l)
 {
     int i;
 
-    if (Node != NULL) {
-
+    if (Node != NULL)
+    {
+        // Аналогічно до звичайного друку — обхід правого піддерева
         PrintOddNumbers_BinaryTree(Node->Right, l + 1);
 
+        // Відступи для структури
         for (i = 0; i < l; i++) cout << "   ";
 
-        if (Node->Data % 2 != 0 )
+        // Друкуємо тільки непарні значення
+        if (Node->Data % 2 != 0)
         {
-            printf("%4ld", Node->Data);
+            printf("%4d", Node->Data);
         }
 
+        // Обхід лівого піддерева
         PrintOddNumbers_BinaryTree(Node->Left, l + 1);
-
     }
-
     else cout << endl;
 }
 
@@ -1072,13 +1099,13 @@ void Task5_1()
     int size = 0;
 
     cout << "Enter count of numbers you want enter: ";
-    cin >> size;
+    cin >> size; 
 
     BinaryTree* tree = Create_BinaryTree(size);
 
     Print_BinaryTree(tree, size);
 
-    cout << "----------------------------------------------";
+    cout << "\n----------------------------------------------\n";
 
     PrintOddNumbers_BinaryTree(tree, size);
 }
@@ -1094,15 +1121,198 @@ void Task5_1()
     - зарплатня(ціле число)
 
   Відібрати всі дані про працівників, зарплатня яких
-  більше серед нього значення зарплатні всіх працівників*/
+  більше середнього значення зарплатні всіх працівників*/
+
+struct Employee
+{
+    string SecondName;
+
+    int PositionCode;
+
+    int BirthYear;
+
+    int Salary;
+};
+
+// Функція для введення списку працівників
+map<int, Employee> AddEmployees()
+{
+    int size = 0;
+
+    cout << "Enter the number of employees: ";
+    cin >> size;
+
+    // Створюємо словник (map), де ключ — це порядковий номер працівника
+    map<int, Employee> employees;
+
+    for (int i = 1; i <= size; i++)
+    {
+        cout << "#" << i;
+
+        Employee employee;
+
+        // Послідовне введення даних працівника
+        cout << "\nEnter last name: ";
+        cin >> employee.SecondName;
+
+        cout << "Enter position code: ";
+        cin >> employee.PositionCode;
+
+        cout << "Enter year of birth: ";
+        cin >> employee.BirthYear;
+
+        cout << "Enter salary: ";
+        cin >> employee.Salary;
+
+        cout << "\n--------------------------\n";
+
+        // Додаємо працівника до словника
+        employees.insert(make_pair(i, employee));
+    }
+
+    return employees;
+}
+
+// Виведення списку працівників
+void PrintEmployees(map<int, Employee> employees)
+{
+    for (int i = 1; i <= employees.size(); i++)
+    {
+        // Знаходимо працівника за ключем i
+        Employee employee = employees.find(i)->second;
+
+        cout << "\n#" << i
+            << "\n" << employee.SecondName
+            << "\n" << employee.PositionCode
+            << "\n" << employee.BirthYear
+            << "\n" << employee.Salary;
+        cout << "\n--------------------------";
+    }
+}
+
+// Обчислення середньої зарплати
+int SalaryAverage(map<int, Employee> employees)
+{
+    int sum = 0;
+
+    // Підсумовуємо зарплати всіх працівників
+    for (int i = 1; i <= employees.size(); i++)
+    {
+        Employee employee = employees.find(i)->second;
+        sum += employee.Salary;
+    }
+
+    // Ділимо суму на кількість працівників
+    int average = sum / employees.size();
+
+    cout << "\nSalary average: " << average;
+
+    return average;
+}
+
+// Виведення працівників, зарплата яких більша за середню
+void EmployeesSalaryBiggerThatAverage(map<int, Employee> employees, int average)
+{
+    for (int i = 1; i <= employees.size(); i++)
+    {
+        Employee employee = employees.find(i)->second;
+
+        if (employee.Salary > average)
+        {
+            cout << "\n#" << i
+                << "\n" << employee.SecondName
+                << "\n" << employee.PositionCode
+                << "\n" << employee.BirthYear
+                << "\n" << employee.Salary;
+            cout << "\n--------------------------";
+        }
+    }
+}
+
+void Task5_2()
+{
+    map<int, Employee> employees = AddEmployees();
+    PrintEmployees(employees);
+    int average = SalaryAverage(employees);
+    EmployeesSalaryBiggerThatAverage(employees, average);
+}
 
 #pragma endregion
 
+#pragma region Task3
+
+/*Створити дві множини set з цілих чисел розміром 21 (діапазон -10-10) та 11(діапазон 0-20).
+  Визначити розміри нових множин. Виконати операції об’єднання, перетин та різницю. 
+  Додати 2 елемента у другу множину. Видалити з першої множини вказаний елемент, якщо такого немає вивести повідомлення.*/
+
+void PrintSet(set<int> numbers)
+{
+    for (int i : numbers)
+    {
+        cout << i << "  ";
+    }
+}
+
+void Task5_3()
+{
+    set<int> firstSet = {-10, -9, -8, -7, -6, -5, -4, -3, -2, 1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    set<int> secondSet = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+
+    PrintSet(firstSet);
+    cout << "\nSize of first set: " << firstSet.size();
+    cout << "\n--------------------------\n";
+
+    PrintSet(secondSet);
+    cout << "\nSize of second set: " << secondSet.size();
+
+    set<int> setUnion;
+    set_union(firstSet.begin(), firstSet.end(), secondSet.begin(), secondSet.end(), inserter(setUnion, setUnion.begin()));
+
+    set<int> setIntersection;
+    set_intersection(firstSet.begin(), firstSet.end(), secondSet.begin(), secondSet.end(), inserter(setIntersection, setIntersection.begin()));
+
+    set<int> setDifference;
+    set_union(firstSet.begin(), firstSet.end(), secondSet.begin(), secondSet.end(), inserter(setDifference, setDifference.begin()));
+
+    cout << "\n--------------------------\n";
+    cout << "Union:";
+    PrintSet(setUnion);
+
+    cout << "\n--------------------------\n";
+    cout << "Intersection:";
+    PrintSet(setIntersection);
+
+    cout << "\n--------------------------\n";
+    cout << "Difference:";
+    PrintSet(setDifference);
+    cout << "\n--------------------------\n";
+
+    cout << "Add two elements to second set: \n";
+    secondSet.insert(-5);
+    secondSet.insert(-3);
+
+    PrintSet(secondSet);
+    cout << "\n--------------------------\n";
+
+    int elementToDelete = -11;
+
+    if (firstSet.erase(elementToDelete))
+    {
+        cout << "\nUpdated first set:\n";
+        PrintSet(firstSet);
+    }
+    else
+    {
+        cout << "Element " << elementToDelete << " not found in first set.\n";
+    }
+}
+
+#pragma endregion
 
 #pragma endregion
 
 
 int main()
 {
-    Task5_1();
+    Task5_3();
 }
